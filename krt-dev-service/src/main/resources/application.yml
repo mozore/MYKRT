@@ -1,0 +1,57 @@
+server:
+  port: 8001 # 端口号
+spring:
+  application:
+    name: dev-service # 服务名
+  datasource:
+    hikari:
+      connection-test-query: SELECT 1
+      connection-timeout: 600000
+      idle-timeout: 500000
+      max-lifetime: 540000
+      maximum-pool-size: 12
+      minimum-idle: 10
+      pool-name: MYKRTHikariPool
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mianyang?serverTimeZone=GMT%2B8
+    username: root
+    password: abc123
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848 # 配置nacos地址
+      discovery:
+        group: "MY-YSB"
+  main:
+    allow-circular-references: true
+
+# 定义dubbo注册中心和协议
+dubbo:
+  application:
+    id: dev-service-nacos # 建议配置代表应用唯一值
+    name: dev-service-nacos # 必要配置，代表应用名称。dubbo环境中，同名自动组建集群
+    register-mode: instance
+  registry:
+    address: nacos://localhost:8848
+    group: "MY-YSB"
+  protocol:
+    name: dubbo # 协议名称 默认dubbo， 必须同时写和不写
+    port: 20880 # 协议端口 默认20880
+  scan:
+    base-packages: com.example
+  #  cloud:
+  #    subscribed-services: test-phone-manager
+  consumer:
+    check: false
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志
+  #配置mapper xml文件的路径
+  mapper-locations: classpath:com/example/pojo/mapper/xml/*.xml
